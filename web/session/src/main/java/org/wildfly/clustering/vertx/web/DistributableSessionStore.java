@@ -127,14 +127,15 @@ public class DistributableSessionStore implements SessionStore {
 	}
 
 	private static io.vertx.ext.web.Session close(Map.Entry<SuspendedBatch, Runnable> entry) {
-		return close(entry, Consumer.empty());
+		close(entry, Consumer.empty());
+		return null;
 	}
 
-	private static io.vertx.ext.web.Session rollback(Map.Entry<SuspendedBatch, Runnable> entry) {
-		return close(entry, Batch::discard);
+	private static void rollback(Map.Entry<SuspendedBatch, Runnable> entry) {
+		close(entry, Batch::discard);
 	}
 
-	private static io.vertx.ext.web.Session close(Map.Entry<SuspendedBatch, Runnable> entry, Consumer<Batch> batchTask) {
+	private static void close(Map.Entry<SuspendedBatch, Runnable> entry, Consumer<Batch> batchTask) {
 		try (Context<Batch> context = entry.getKey().resumeWithContext()) {
 			try (Batch batch = context.get()) {
 				batchTask.accept(batch);
@@ -144,7 +145,6 @@ public class DistributableSessionStore implements SessionStore {
 		} finally {
 			entry.getValue().run();
 		}
-		return null;
 	}
 
 	@Override
