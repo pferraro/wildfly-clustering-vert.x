@@ -15,6 +15,10 @@
 
 	<name>${project.repository.name}: Auth extension</name>
 
+	<properties>
+		<project.module.name>org.wildfly.clustering.vertx.auth</project.module.name>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.kohsuke.metainf-services</groupId>

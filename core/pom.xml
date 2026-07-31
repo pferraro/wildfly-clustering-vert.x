@@ -16,6 +16,10 @@
 
 	<name>${project.repository.name}: Core</name>
 
+	<properties>
+		<project.module.name>org.wildfly.clustering.vertx.core</project.module.name>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.kohsuke.metainf-services</groupId>

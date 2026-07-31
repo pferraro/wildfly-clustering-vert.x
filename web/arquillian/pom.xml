@@ -16,6 +16,10 @@
 
 	<name>${project.vertx.web}: Arquillian</name>
 
+	<properties>
+		<project.module.name>org.wildfly.clustering.vertx.arquillian</project.module.name>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.kohsuke.metainf-services</groupId>

@@ -62,9 +62,6 @@ import org.wildfly.clustering.function.Function;
 import org.wildfly.clustering.function.Predicate;
 import org.wildfly.clustering.function.Runner;
 import org.wildfly.clustering.marshalling.ByteBufferMarshaller;
-import org.wildfly.clustering.marshalling.protostream.ClassLoaderMarshaller;
-import org.wildfly.clustering.marshalling.protostream.ProtoStreamByteBufferMarshaller;
-import org.wildfly.clustering.marshalling.protostream.SerializationContextBuilder;
 import org.wildfly.clustering.server.group.GroupCommandDispatcherFactory;
 import org.wildfly.clustering.server.infinispan.dispatcher.CacheContainerCommandDispatcherFactory;
 import org.wildfly.clustering.server.infinispan.dispatcher.ChannelEmbeddedCacheManagerCommandDispatcherFactoryConfiguration;
@@ -79,6 +76,7 @@ import org.wildfly.clustering.session.infinispan.embedded.InfinispanSessionManag
 import org.wildfly.clustering.session.infinispan.embedded.metadata.SessionMetaDataKey;
 import org.wildfly.clustering.vertx.web.DistributableSessionManagerFactoryConfiguration;
 import org.wildfly.clustering.vertx.web.DistributableSessionStore;
+import org.wildfly.clustering.vertx.web.SessionAttributeMarshaller;
 
 /**
  * An embedded Infinispan {@link SessionStore} for Vert.x.
@@ -183,7 +181,7 @@ public class InfinispanSessionStore extends DistributableSessionStore {
 
 						@Override
 						public Function<ClassLoader, ByteBufferMarshaller> getMarshallerFactory() {
-							return loader -> new ProtoStreamByteBufferMarshaller(SerializationContextBuilder.newInstance(ClassLoaderMarshaller.of(loader)).load(loader).build());
+							return SessionAttributeMarshaller.PROTOSTREAM;
 						}
 
 						@Override
@@ -202,7 +200,7 @@ public class InfinispanSessionStore extends DistributableSessionStore {
 							.listenerThreadPool().threadFactory(new DefaultBlockingThreadFactory(ListenerInvocation.class))
 							.nonBlockingThreadPool().threadFactory(new DefaultNonBlockingThreadFactory(NonBlockingManager.class))
 							.serialization()
-								.marshaller(new UserMarshaller(MediaTypes.WILDFLY_PROTOSTREAM, new ProtoStreamByteBufferMarshaller(SerializationContextBuilder.newInstance(ClassLoaderMarshaller.of(loader)).load(loader).build())))
+								.marshaller(new UserMarshaller(MediaTypes.WILDFLY_PROTOSTREAM, SessionAttributeMarshaller.PROTOSTREAM.apply(loader)))
 								// Register dummy serialization context initializer, to bypass service loading in org.infinispan.marshall.protostream.impl.SerializationContextRegistryImpl
 								// Otherwise marshaller auto-detection will not work
 								.addContextInitializer(new SerializationContextInitializer() {

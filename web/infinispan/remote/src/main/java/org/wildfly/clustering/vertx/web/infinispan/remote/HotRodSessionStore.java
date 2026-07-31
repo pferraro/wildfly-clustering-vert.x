@@ -38,14 +38,12 @@ import org.wildfly.clustering.cache.infinispan.remote.RemoteCacheConfiguration;
 import org.wildfly.clustering.cache.infinispan.remote.transaction.RemoteTransactionManagerLookup;
 import org.wildfly.clustering.function.BiFunction;
 import org.wildfly.clustering.function.Runner;
-import org.wildfly.clustering.marshalling.protostream.ClassLoaderMarshaller;
-import org.wildfly.clustering.marshalling.protostream.ProtoStreamByteBufferMarshaller;
-import org.wildfly.clustering.marshalling.protostream.SerializationContextBuilder;
 import org.wildfly.clustering.session.SessionManagerFactory;
 import org.wildfly.clustering.session.SessionManagerFactoryConfiguration;
 import org.wildfly.clustering.session.infinispan.remote.HotRodSessionManagerFactory;
 import org.wildfly.clustering.vertx.web.DistributableSessionManagerFactoryConfiguration;
 import org.wildfly.clustering.vertx.web.DistributableSessionStore;
+import org.wildfly.clustering.vertx.web.SessionAttributeMarshaller;
 
 /**
  * A remote Infinispan {@link SessionStore} for Vert.x.
@@ -119,7 +117,7 @@ public class HotRodSessionStore extends DistributableSessionStore {
 				ThreadPoolExecutor executor = new DefaultAsyncExecutorFactory().getExecutor(properties);
 				Configuration configuration = ((uri != null) ? HotRodURI.create(uri).toConfigurationBuilder() : new ConfigurationBuilder())
 						.withProperties(properties)
-						.marshaller(new UserMarshaller(MediaTypes.WILDFLY_PROTOSTREAM, new ProtoStreamByteBufferMarshaller(SerializationContextBuilder.newInstance(ClassLoaderMarshaller.of(loader)).load(loader).build())))
+						.marshaller(new UserMarshaller(MediaTypes.WILDFLY_PROTOSTREAM, SessionAttributeMarshaller.PROTOSTREAM.apply(loader)))
 						.asyncExecutorFactory().factory(new ExecutorFactory() {
 							@Override
 							public ExecutorService getExecutor(Properties p) {

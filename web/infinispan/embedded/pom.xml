@@ -16,6 +16,10 @@
 
 	<name>${project.vertx.web.infinispan}: Embedded</name>
 
+	<properties>
+		<project.module.name>org.wildfly.clustering.vertx.web.infinispan.embedded</project.module.name>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.kohsuke.metainf-services</groupId>
