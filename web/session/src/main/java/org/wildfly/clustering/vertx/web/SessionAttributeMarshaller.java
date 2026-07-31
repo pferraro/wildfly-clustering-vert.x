@@ -6,16 +6,17 @@ package org.wildfly.clustering.vertx.web;
 
 import java.io.ObjectInputFilter;
 import java.util.Optional;
-import java.util.function.Function;
 
 import org.jboss.marshalling.SimpleClassResolver;
+import org.wildfly.clustering.function.Function;
 import org.wildfly.clustering.marshalling.ByteBufferMarshaller;
 import org.wildfly.clustering.marshalling.java.JavaByteBufferMarshaller;
 import org.wildfly.clustering.marshalling.jboss.JBossByteBufferMarshaller;
 import org.wildfly.clustering.marshalling.jboss.MarshallingConfigurationBuilder;
-import org.wildfly.clustering.marshalling.protostream.ClassLoaderMarshaller;
+import org.wildfly.clustering.marshalling.protostream.ClassLoaderResolver;
+import org.wildfly.clustering.marshalling.protostream.ImmutableSerializationContext;
 import org.wildfly.clustering.marshalling.protostream.ProtoStreamByteBufferMarshaller;
-import org.wildfly.clustering.marshalling.protostream.SerializationContextBuilder;
+import org.wildfly.clustering.marshalling.protostream.ProtoStreamConfiguration;
 
 /**
  * Enumerates the supported session attribute marshallers.
@@ -41,7 +42,7 @@ public enum SessionAttributeMarshaller implements Function<ClassLoader, ByteBuff
 	PROTOSTREAM() {
 		@Override
 		public ByteBufferMarshaller apply(ClassLoader loader) {
-			return new ProtoStreamByteBufferMarshaller(SerializationContextBuilder.newInstance(ClassLoaderMarshaller.of(loader)).load(loader).build());
+			return new ProtoStreamByteBufferMarshaller(ImmutableSerializationContext.Builder.with(ProtoStreamConfiguration.Builder.with(ClassLoaderResolver.of(loader)).build()).build());
 		}
 	},
 }

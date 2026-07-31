@@ -16,6 +16,10 @@
 
 	<name>${project.vertx.web.infinispan}: Remote</name>
 
+	<properties>
+		<project.module.name>org.wildfly.clustering.vertx.web.infinispan.remote</project.module.name>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.kohsuke.metainf-services</groupId>
